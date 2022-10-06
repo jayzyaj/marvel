@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { getAllMarvelHeroes } from '../services/marvel';
@@ -10,7 +9,11 @@ const queryClient = new QueryClient();
 function List() {
   const { isLoading, data: response } = useQuery('marvel', getAllMarvelHeroes);
   if (isLoading) {
-    return <div>Loading</div>;
+    return (
+      <div className="flex justify-center align-center center">
+        <progress className="progress w-56"></progress>
+      </div>
+    );
   }
   if (!response) return null;
   const { data } = response;
@@ -20,11 +23,11 @@ function List() {
       {results.map((marvel) => (
         <div className="card w-96 bg-base-100 shadow-xl" key={marvel.id}>
           <figure>
-            <img src="https://placeimg.com/400/225/arch" alt="Shoes" />
+            <img src={`${marvel.thumbnail.path}/portrait_large.${marvel.thumbnail.extension}`} alt="Shoes" />
           </figure>
           <div className="card-body">
-            <h2 className="card-title">Shoes!</h2>
-            <p>If a dog chews shoes whose shoes does he choose?</p>
+            <h2 className="card-title">{marvel.name}</h2>
+            <p>{marvel.description}</p>
             <div className="card-actions justify-end">
               <button className="btn btn-primary">Buy Now</button>
             </div>
@@ -38,7 +41,7 @@ function List() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="container py-8">
+      <div className="container py-8 w-max m-auto">
         <List />
       </div>
     </QueryClientProvider>
